@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. TYPING ANIMATION FOR HERO SECTION
     // ==================================================
     const typingText = document.querySelector('.typing-text');
-    // You can add more roles here to cycle through them
     const words = ["WEB DEVELOPER", "FRONT-END DEVELOPER", "WORDPRESS EXPERT"];
     let wordIndex = 0;
     let charIndex = 0;
