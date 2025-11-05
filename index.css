@@ -1130,6 +1130,10 @@ footer {
 /* ============================================= */
 
 @media (max-width: 1200px) {
+    .social-media {
+        margin-left: -10px;
+    }
+
     .about-coder-shape {
         height: 370px;
         width: 110%;
@@ -1370,7 +1374,7 @@ footer {
         width: 50%;
         border-radius: 0px 0px 5px 0px;
     }
-    
+
     .navbar a {
         font-size: 15px;
         display: block;
@@ -1512,6 +1516,10 @@ footer {
 }
 
 @media (max-width: 426px) {
+    .social-media {
+        margin-left: -10px;
+    }
+
     .hero-text h1 {
         font-size: 35px;
     }
