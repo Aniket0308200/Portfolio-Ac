@@ -1,5 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const menuIcon = document.querySelector('.menu-icon');
+    const navbar = document.querySelector('.navbar');
+
+    menuIcon.addEventListener('click', () => {
+        navbar.classList.toggle('active');
+        menuIcon.classList.toggle('active');
+        setTimeout(() => {
+        menuIcon.classList.toggle('fa-bars');
+        menuIcon.classList.toggle('fa-times');
+    }, 300);
+    });
+
+    // Optional: Close menu when a link is clicked
+    const navLinks = document.querySelectorAll('.navbar a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navbar.classList.contains('active')) {
+                navbar.classList.remove('active');
+            }
+        });
+    });
+
     // ==================================================
     // 1. TYPING ANIMATION FOR HERO SECTION
     // ==================================================
@@ -44,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. ACTIVE NAVIGATION LINK ON SCROLL
     // ==================================================
     const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.navbar a');
+    // const navLinks = document.querySelectorAll('.navbar a');
 
     window.addEventListener('scroll', () => {
         let current = '';
@@ -115,63 +137,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // ==================================================
-    // 5. CONTACT FORM SUBMISSION LOGIC
-    // ==================================================
-    const contactForm = document.getElementById('contact-form');
-    const formStatus = document.getElementById('form-status');
+        // 5. CONTACT FORM SUBMISSION LOGIC
+        // ==================================================
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
 
-    async function handleSubmit(event) {
-        event.preventDefault(); // Page ko reload hone se roko
-        const data = new FormData(event.target);
-        
-        // Button ko disable karke "Sending..." dikhao
-        const submitButton = contactForm.querySelector('button[type="submit"]');
-        submitButton.disabled = true;
-        submitButton.innerHTML = "SENDING...";
+        async function handleSubmit(event) {
+            event.preventDefault(); // Page ko reload hone se roko
+            const data = new FormData(event.target);
 
-        try {
-            const response = await fetch(event.target.action, {
-                method: contactForm.method,
-                body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
+            // Button ko disable karke "Sending..." dikhao
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.innerHTML = "SENDING...";
 
-            if (response.ok) {
-                // Success message
-                formStatus.textContent = "Thank you! Your message has been sent.";
-                formStatus.style.color = "lightgreen";
-                contactForm.reset(); // Form ko khali kar do
-            } else {
-                // Agar server se error aaye
-                const responseData = await response.json();
-                if (Object.hasOwn(responseData, 'errors')) {
-                    formStatus.textContent = responseData["errors"].map(error => error["message"]).join(", ");
+            try {
+                const response = await fetch(event.target.action, {
+                    method: contactForm.method,
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Success message
+                    formStatus.textContent = "Thank you! Your message has been sent.";
+                    formStatus.style.color = "lightgreen";
+                    contactForm.reset(); // Form ko khali kar do
                 } else {
-                    formStatus.textContent = "Oops! There was a problem submitting your form.";
+                    // Agar server se error aaye
+                    const responseData = await response.json();
+                    if (Object.hasOwn(responseData, 'errors')) {
+                        formStatus.textContent = responseData["errors"].map(error => error["message"]).join(", ");
+                    } else {
+                        formStatus.textContent = "Oops! There was a problem submitting your form.";
+                    }
+                    formStatus.style.color = "red";
                 }
+            } catch (error) {
+                // Agar network ya koi aur error ho
+                formStatus.textContent = "Oops! There was a problem submitting your form.";
                 formStatus.style.color = "red";
+            } finally {
+                // Button ko wapas normal kar do
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'SEND MESSAGE <i class="fa-solid fa-arrow-right"></i>';
+                // 5 second baad status message hata do
+                setTimeout(() => {
+                    formStatus.textContent = "";
+                }, 5000);
             }
-        } catch (error) {
-            // Agar network ya koi aur error ho
-            formStatus.textContent = "Oops! There was a problem submitting your form.";
-            formStatus.style.color = "red";
-        } finally {
-            // Button ko wapas normal kar do
-            submitButton.disabled = false;
-            submitButton.innerHTML = 'SEND MESSAGE <i class="fa-solid fa-arrow-right"></i>';
-            // 5 second baad status message hata do
-            setTimeout(() => {
-                formStatus.textContent = "";
-            }, 5000);
         }
-    }
 
-    // Sirf tabhi code chalao jab contact form page par ho
-    if (contactForm) {
-        contactForm.addEventListener("submit", handleSubmit);
-    }
+        // Sirf tabhi code chalao jab contact form page par ho
+        if (contactForm) {
+            contactForm.addEventListener("submit", handleSubmit);
+        }
     }
 
 });
