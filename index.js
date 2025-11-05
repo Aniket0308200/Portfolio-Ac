@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
         navbar.classList.toggle('active');
         menuIcon.classList.toggle('active');
         setTimeout(() => {
-        menuIcon.classList.toggle('fa-bars');
-        menuIcon.classList.toggle('fa-times');
-    }, 300);
+            menuIcon.classList.toggle('fa-bars');
+            menuIcon.classList.toggle('fa-times');
+        }, 300);
     });
 
     // Optional: Close menu when a link is clicked
@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', () => {
             if (navbar.classList.contains('active')) {
                 navbar.classList.remove('active');
+                menuIcon.classList.remove('active');
+                setTimeout(() => {
+                    menuIcon.classList.toggle('fa-bars');
+                    menuIcon.classList.toggle('fa-times');
+                }, 300);
             }
         });
     });
