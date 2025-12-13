@@ -1,34 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ==================================================
+    // 1. NAVIGATION & MENU LOGIC
+    // ==================================================
     const menuIcon = document.querySelector('.menu-icon');
     const navbar = document.querySelector('.navbar');
-
-    menuIcon.addEventListener('click', () => {
-        navbar.classList.toggle('active');
-        menuIcon.classList.toggle('active');
-        setTimeout(() => {
-            menuIcon.classList.toggle('fa-bars');
-            menuIcon.classList.toggle('fa-times');
-        }, 300);
-    });
-
-    // Optional: Close menu when a link is clicked
     const navLinks = document.querySelectorAll('.navbar a');
+
+    if (menuIcon && navbar) {
+        menuIcon.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            menuIcon.classList.toggle('active');
+            // Icon animation
+            setTimeout(() => {
+                if (menuIcon.classList.contains('active')) {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-times');
+                } else {
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                }
+            }, 300);
+        });
+    }
+
+    // Close menu when a link is clicked
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             if (navbar.classList.contains('active')) {
                 navbar.classList.remove('active');
                 menuIcon.classList.remove('active');
                 setTimeout(() => {
-                    menuIcon.classList.toggle('fa-bars');
-                    menuIcon.classList.toggle('fa-times');
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
                 }, 300);
             }
         });
     });
 
     // ==================================================
-    // 1. TYPING ANIMATION FOR HERO SECTION
+    // 2. TYPING ANIMATION
     // ==================================================
     const typingText = document.querySelector('.typing-text');
     const words = ["WEB DEVELOPER", "FRONT-END DEVELOPER", "WORDPRESS EXPERT"];
@@ -43,41 +54,35 @@ document.addEventListener('DOMContentLoaded', () => {
         typingText.textContent = currentChar;
 
         if (!isDeleting && charIndex < currentWord.length) {
-            // Typing forward
             charIndex++;
             setTimeout(type, 150);
         } else if (isDeleting && charIndex > 0) {
-            // Deleting
             charIndex--;
             setTimeout(type, 100);
         } else {
-            // Word is finished typing or deleting, so switch mode
             isDeleting = !isDeleting;
             if (!isDeleting) {
-                // Move to the next word
                 wordIndex = (wordIndex + 1) % words.length;
             }
-            // Pause before starting next action
             setTimeout(type, 1200);
         }
     }
 
-    // Only start the typing animation if the element exists on the page
     if (typingText) {
         type();
     }
 
     // ==================================================
-    // 2. ACTIVE NAVIGATION LINK ON SCROLL
+    // 3. ACTIVE NAVIGATION LINK ON SCROLL
     // ==================================================
     const sections = document.querySelectorAll('section');
-    // const navLinks = document.querySelectorAll('.navbar a');
 
     window.addEventListener('scroll', () => {
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            if (window.pageYOffset >= sectionTop - 60) {
+            const sectionHeight = section.clientHeight;
+            if (window.pageYOffset >= (sectionTop - sectionHeight / 3)) {
                 current = section.getAttribute('id');
             }
         });
@@ -91,114 +96,113 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==================================================
-    // 3. SMOOTH SCROLLING FOR ALL ANCHOR LINKS
+    // 4. SMOOTH SCROLLING
     // ==================================================
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const targetId = this.getAttribute('href');
+            if (targetId && document.querySelector(targetId)) {
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
     });
 
     // ==================================================
-    // 4. PROJECT FILTERING LOGIC
+    // 5. PROJECT FILTERING LOGIC (UPDATED & FIXED)
     // ==================================================
     const filterButtons = document.querySelectorAll('.filter-btn');
     const projectCards = document.querySelectorAll('.project-card');
     const projectGrid = document.querySelector('.project-grid');
 
-    // Only run this code if filter buttons exist on the page
     if (filterButtons.length > 0 && projectGrid) {
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Set the active class on the clicked button
                 filterButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
-                const filter = button.dataset.filter;
+                const filterValue = button.getAttribute('data-filter');
 
-                // Animate the grid out
-                projectGrid.style.opacity = 0;
-                projectGrid.style.transform = 'scale(0.98)';
+                projectGrid.style.opacity = '0';
+                projectGrid.style.transform = 'scale(0.95)';
+                projectGrid.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
 
                 setTimeout(() => {
-                    // Filter the cards
                     projectCards.forEach(card => {
-                        const category = card.dataset.category;
-                        if (filter === 'all' || category === filter) {
-                            card.style.display = 'flex'; // Use 'flex' or 'block' as per your card's CSS
+                        const cardCategory = card.getAttribute('data-category');
+
+                        if (filterValue === 'all' || cardCategory === filterValue) {
+                            card.style.display = 'flex';
+                            requestAnimationFrame(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'scale(1)';
+                            });
                         } else {
                             card.style.display = 'none';
                         }
                     });
 
-                    // Animate the grid back in
-                    projectGrid.style.opacity = 1;
+                    projectGrid.style.opacity = '1';
                     projectGrid.style.transform = 'scale(1)';
-                }, 300); // This duration should match your CSS transition time
+
+                }, 300);
             });
         });
+    }
 
-        // ==================================================
-        // 5. CONTACT FORM SUBMISSION LOGIC
-        // ==================================================
-        const contactForm = document.getElementById('contact-form');
-        const formStatus = document.getElementById('form-status');
+    // ==================================================
+    // 6. CONTACT FORM SUBMISSION
+    // ==================================================
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
 
-        async function handleSubmit(event) {
-            event.preventDefault(); // Page ko reload hone se roko
-            const data = new FormData(event.target);
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const data = new FormData(event.target);
+        const submitButton = contactForm.querySelector('button[type="submit"]');
 
-            // Button ko disable karke "Sending..." dikhao
-            const submitButton = contactForm.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.innerHTML = "SENDING...";
+        submitButton.disabled = true;
+        const originalBtnText = submitButton.innerHTML;
+        submitButton.innerHTML = "SENDING...";
 
-            try {
-                const response = await fetch(event.target.action, {
-                    method: contactForm.method,
-                    body: data,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    // Success message
-                    formStatus.textContent = "Thank you! Your message has been sent.";
-                    formStatus.style.color = "lightgreen";
-                    contactForm.reset(); // Form ko khali kar do
-                } else {
-                    // Agar server se error aaye
-                    const responseData = await response.json();
-                    if (Object.hasOwn(responseData, 'errors')) {
-                        formStatus.textContent = responseData["errors"].map(error => error["message"]).join(", ");
-                    } else {
-                        formStatus.textContent = "Oops! There was a problem submitting your form.";
-                    }
-                    formStatus.style.color = "red";
+        try {
+            const response = await fetch(event.target.action, {
+                method: contactForm.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
                 }
-            } catch (error) {
-                // Agar network ya koi aur error ho
-                formStatus.textContent = "Oops! There was a problem submitting your form.";
-                formStatus.style.color = "red";
-            } finally {
-                // Button ko wapas normal kar do
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'SEND MESSAGE <i class="fa-solid fa-arrow-right"></i>';
-                // 5 second baad status message hata do
-                setTimeout(() => {
-                    formStatus.textContent = "";
-                }, 5000);
-            }
-        }
+            });
 
-        // Sirf tabhi code chalao jab contact form page par ho
-        if (contactForm) {
-            contactForm.addEventListener("submit", handleSubmit);
+            if (response.ok) {
+                formStatus.textContent = "Thank you! Your message has been sent.";
+                formStatus.style.color = "#4ade80";
+                contactForm.reset();
+            } else {
+                const responseData = await response.json();
+                if (Object.hasOwn(responseData, 'errors')) {
+                    formStatus.textContent = responseData["errors"].map(error => error["message"]).join(", ");
+                } else {
+                    formStatus.textContent = "Oops! There was a problem submitting your form.";
+                }
+                formStatus.style.color = "#f87171";
+            }
+        } catch (error) {
+            formStatus.textContent = "Oops! There was a problem submitting your form.";
+            formStatus.style.color = "#f87171";
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalBtnText;
+            setTimeout(() => {
+                formStatus.textContent = "";
+            }, 5000);
         }
+    }
+
+    if (contactForm) {
+        contactForm.addEventListener("submit", handleSubmit);
     }
 
 });
