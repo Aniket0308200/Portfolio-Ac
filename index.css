@@ -138,12 +138,25 @@ body::before {
     color: var(--text-color);
     cursor: pointer;
     display: none;
-    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), background-color 0.2s, border-color 0.2s;
     transform: rotate(0deg);
+    padding: 10px;
+    border: 2px solid transparent;
+    border-radius: 5px;
 }
 
 .menu-icon.active {
     transform: rotate(90deg);
+}
+
+.menu-icon:hover {
+    border: 2px solid rgba(239, 239, 239, 0.815);
+    background-color: rgba(62, 62, 62, 0.664);
+}
+
+.menu-icon:active {
+    border: 2px solid rgba(239, 239, 239, 1);
+    background-color: rgba(62, 62, 62, 0.9);
 }
 
 /* Sections */
@@ -1159,6 +1172,24 @@ footer {
     }
 }
 
+@media (max-width: 1024px) {
+    /* .hero-content {
+        gap: 1rem;
+    } */
+
+    .about-coder-shape {
+        height: 480px;
+    }
+
+    .about-image {
+        max-width: 400px;
+    }
+
+    .about-image-wrapper {
+        min-width: 480px;
+    }
+}
+
 @media (max-width: 992px) {
     .header {
         padding: 20px 5%;
@@ -1329,28 +1360,22 @@ footer {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
     .header {
-        /* Re-order items: Icon, Logo, Email */
         justify-content: space-between;
     }
 
     .menu-icon {
         display: block;
-        /* Show hamburger icon */
         order: -1;
-        /* Move to the far left */
     }
 
     .email-btn-outline {
-        /* Keep email button on the right */
         order: 1;
     }
 
     .logo {
-        /* Logo will be in the middle */
         order: 0;
-        /* Adjust to center it if needed, but space-between might be fine */
     }
 
     .navbar {
@@ -1397,9 +1422,17 @@ footer {
         color: var(--bg-color);
     }
 
+    .about {
+        padding: 80px 50px 50px 50px;
+    }
+
+    .about-image {
+        max-width: 300px;
+    }
+
     .about-coder-shape {
         height: 360px;
-        width: 120%;
+        width: 85%;
     }
 
     .about-header-centered h2 {
@@ -1415,7 +1448,11 @@ footer {
     }
 
     .stat-item h3 {
-        font-size: 2rem;
+        font-size: 25px;
+    }
+
+    .stat-item p {
+        font-size: 11px;
     }
 
     .partners {
@@ -1434,6 +1471,10 @@ footer {
 
     .hero-buttons {
         display: flex;
+    }
+
+    .service-card {
+        max-width: 600px;
     }
 }
 
@@ -1516,7 +1557,8 @@ footer {
     }
 }
 
-@media (max-width: 426px) {
+/* @media (max-width: 426px) { */
+@media (max-width: 560px) {
     .social-media {
         margin-left: -10px;
     }
